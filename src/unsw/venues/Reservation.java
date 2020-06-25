@@ -13,11 +13,15 @@ public class Reservation {
         this.end = end;
     }
 
-    public getStart() {
+    public String getId() {
+        return id;
+    }
+
+    public LocalDate getStart() {
         return start;
     }
 
-    public getEnd() {
+    public LocalDate getEnd() {
         return end;
     }
 }
