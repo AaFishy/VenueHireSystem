@@ -24,6 +24,7 @@ package unsw.venues;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Collections;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -116,10 +117,10 @@ public class VenueHireSystem {
         // TODO Process the room command
         // Is there a Venue with the same name already
         Venue foundVenue = null;
-        for (int i = 0; i < venues.size(); i++) {
+        for (Venue v : venues) {
             // Found venue with same name
-            if (venue.equals(venues.get(i).getName())) {
-                foundVenue = venues.get(i);
+            if (venue.equals(v.getName())) {
+                foundVenue = v;
                 break;
             }
         }
@@ -136,34 +137,41 @@ public class VenueHireSystem {
     public void cancelRoom(String id) {
         ArrayList<Room> rooms = findRoomsId(id);
         if (rooms == null) return;
-        for (int i = 0; i < rooms.size(); i++) {
-            Room currRoom = rooms.get(i);
+        for (Room currRoom : rooms) {
             currRoom.removeReservation(id);
+            System.out.println("Cancelling from " + currRoom.getName());
+        }
+    }
+
+    public void sortReservationByDate(ArrayList<Reservation> reservations) {
+        for (int i = 0; i < reservations.size() - 1; i++) {
+            for (int j = 0; j < reservations.size() - i - 1; j++) {
+                if (reservations.get(j).getStart().isAfter(reservations.get(j+1).getStart())) {
+                    Collections.swap(reservations, j, j+1);
+                }
+            }
         }
     }
 
     public JSONArray list(String venueName) {
         JSONArray arrayResults = new JSONArray();
-        for (int i = 0; i < venues.size(); i++) {
-            Venue venue = venues.get(i);
+        for (Venue venue : venues) {
             if (!venue.getName().equals(venueName)) continue;
             // Getting list of rooms
             ArrayList<Room> rooms = venue.getRooms();
-            for (int j = 0; j < rooms.size(); j++) {
+            for (Room currRoom : rooms) {
                 JSONObject result = new JSONObject();
-                Room currRoom = rooms.get(j);
                 result.put("room", currRoom.getName());
-                // Getting list of reservations
-                ArrayList<Reservation> currReservations = currRoom.getReservations();
                 JSONArray reservationArray = new JSONArray();
-                for (int k = 0; k < currReservations.size(); k++) {
+                // Ordering currReservation array in order of StartDate
+                ArrayList<Reservation> reservations = currRoom.getReservations();
+                sortReservationByDate(reservations);
+                for (Reservation currRes : reservations) {
+                    System.out.println("    id = " + currRes.getId());
                     JSONObject reserveObject = new JSONObject();
-                    // Getting current reservation
-                    Reservation currRes = currReservations.get(k);
                     reserveObject.put("id", currRes.getId());
                     reserveObject.put("start", currRes.getStart());
                     reserveObject.put("end", currRes.getEnd());
-
                     reservationArray.put(reserveObject);
                 }
                 result.put("reservations", reservationArray);
@@ -175,12 +183,10 @@ public class VenueHireSystem {
 
     public ArrayList<Room> findRoomsId(String id) {
         ArrayList<Room> foundRooms = new ArrayList<Room>();
-        for (int i = 0; i < venues.size(); i++) {
-            Venue currVenue = venues.get(i);
+        for (Venue currVenue : venues) {
             ArrayList<Room> rooms = currVenue.getRooms();
 
-            for (int j = 0; j < rooms.size(); j++) {
-                Room currRoom = rooms.get(j);
+            for (Room currRoom : rooms) {
                 Reservation currRes = currRoom.getResId(id);
                 if (currRes != null) {
                     if (currRes.getId().equals(id)) foundRooms.add(currRoom);
@@ -188,6 +194,7 @@ public class VenueHireSystem {
                 
             }
         }
+        if (foundRooms.size() != 0) return foundRooms;
         return null;
     }
 
@@ -197,11 +204,11 @@ public class VenueHireSystem {
         ArrayList<Room> goodRooms = new ArrayList<Room>();
         String status = "rejected";
         String venue = "";
-        ArrayList<Venue> oldVenues = venues;
         // TODO Process the request commmand
         ArrayList<Room> foundRooms = findRoomsId(id);
         // If there already exists the room - change command
         if (foundRooms != null) {
+            System.out.println("CANCEL");
             cancelRoom(id);
             /*for (int i = 0; i < venues.size(); i++) {
                 ArrayList<Room> rooms = venues.get(i).getRooms();
@@ -216,8 +223,7 @@ public class VenueHireSystem {
             
         }
     
-        for (int i = 0; i < venues.size(); i++) {
-            Venue currVenue = venues.get(i);
+        for (Venue currVenue : venues) {
             boolean foundReservation = true;
             /*System.out.println("Venue = " + currVenue.getName());
             System.out.println("        numSmall = " + currVenue.getNumSmall());
@@ -230,15 +236,13 @@ public class VenueHireSystem {
                 int mediumCount = 0;
                 int largeCount = 0;
                 ArrayList<Room> rooms = currVenue.getRooms();
-                for (int j = 0; j < rooms.size(); j++) {
-                    Room currRoom = rooms.get(j);
+                for (Room currRoom : rooms) {
                     //System.out.println("    Room = " + currRoom.getName());
                     // Determining if the reservation is clashing with another
                     ArrayList<Reservation> currReservations = currRoom.getReservations();
                     if (currReservations.size() == 0) foundReservation = true;
                     else {
-                        for (int k = 0; k < currReservations.size(); k++) {
-                            Reservation currRes = currReservations.get(k);
+                        for (Reservation currRes : currReservations) {
                             /*System.out.println("        Res ID = " + currRes.getId());
                             System.out.println("        Res start = " + currRes.getStart().toString());
                             System.out.println("        Res end = " + currRes.getEnd().toString());*/
@@ -298,13 +302,20 @@ public class VenueHireSystem {
         if (status == "success") {
             result.put("venue", venue);
             JSONArray rooms = new JSONArray();
-            for (int i = 0; i < goodRooms.size(); i++) {
-                rooms.put(goodRooms.get(i).getName());
+            for (Room r : goodRooms) {
+                rooms.put(r.getName());
             }
 
             result.put("rooms", rooms);
         // If fail, then reset
-        } else venues = oldVenues;
+        } else {
+            // Rebook :)
+            if (foundRooms != null) {
+                for (Room room : foundRooms) {
+                    room.addReservation(new Reservation(id, start, end));
+                }
+            }
+        }
 
         return result;
     }

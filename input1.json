@@ -1,0 +1,19 @@
+{ "command": "room", "venue": "Hotel Transylvania", "room": "Bat Room", "size": "large" }
+{ "command": "room", "venue": "Hotel Transylvania", "room": "Zombie Arm", "size": "medium" }
+{ "command": "room", "venue": "Hotel Transylvania", "room": "Dracula Chamber", "size": "small" }
+{ "command": "room", "venue": "Hotel Transylvania", "room": "Coffin", "size": "small" }
+// Assign to Bat Room of Hotel Transylvania
+{ "command": "request", "id": "Want Sleep", "start": "2019-02-19", "end": "2019-02-25", "small": 0, "medium": 0, "large": 1 }
+// Assign to Zombie Arm of Hotel Transylvania
+{ "command": "request", "id": "Undead", "start": "2019-02-20", "end": "2019-02-23", "small": 0, "medium": 1, "large": 0 }
+// Fails since "Alive" is clashing with "Want Sleep"
+{ "command": "request", "id": "Alive", "start": "2019-02-25", "end": "2019-02-27", "small": 0, "medium": 0, "large": 1 }
+// Assign to Bat Room, Zombie Arm, Dracula Chamber, Coffin of Hotel Transylvania
+{ "command": "request", "id": "Big Family", "start": "2019-02-28", "end": "2019-03-01", "small": 2, "medium": 1, "large": 1 }
+// List Hotel Transylvania
+{ "command": "list", "venue": "Hotel Transylvania" }
+// Assign to Bat Room, Zombie Arm, Dracula Chamber
+// Wrong
+{ "command": "change", "id": "Big Family", "start": "2019-02-28", "end": "2019-03-01", "small": 1, "medium": 1, "large": 2 }
+// List Hotel Transylvania
+{ "command": "list", "venue": "Hotel Transylvania" }
