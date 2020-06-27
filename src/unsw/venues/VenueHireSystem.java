@@ -1,18 +1,3 @@
-/* TEST FOR CHECKING VENUES AND ROOMS
-    for (int i = 0; i < venues.size(); i++) {
-        Venue currVenue = venues.get(i);
-        System.out.println("Venue = " + currVenue.getName());
-        System.out.println("        numSmall = " + currVenue.getNumSmall());
-        System.out.println("        numMed = " + currVenue.getNumMed());
-        System.out.println("        numLarge = " + currVenue.getNumLarge());
-        for (int j = 0; j < currVenue.getRooms().size(); j++) {
-            Room currRoom = currVenue.getRooms().get(j);
-            System.out.println("    Room = " + currRoom.getName());
-            System.out.println("        Size = " + currRoom.getSize());
-        }
-    }*/
-
-
 /* TODO
         Fix change function
 */
@@ -207,25 +192,10 @@ public class VenueHireSystem {
         // If there already exists the room - change command
         if (foundRooms != null) {
             cancelRoom(id);
-            /*for (int i = 0; i < venues.size(); i++) {
-                ArrayList<Room> rooms = venues.get(i).getRooms();
-                for (int j = 0; j < rooms.size(); j++) {
-                    Room currRoom = rooms.get(j);
-                    currRoom.removeReservation(id);
-                    //System.out.println("removed :)");
-                    removedRoom = true;
-                }
-                if (removedRoom) break;
-            }*/
-            
         }
     
         for (Venue currVenue : venues) {
             boolean foundReservation = true;
-            /*System.out.println("Venue = " + currVenue.getName());
-            System.out.println("        numSmall = " + currVenue.getNumSmall());
-            System.out.println("        numMed = " + currVenue.getNumMed());
-            System.out.println("        numLarge = " + currVenue.getNumLarge());*/
             // The venue has enough rooms to accomodate
             if (currVenue.getNumSmall() >= small && currVenue.getNumMed() >= medium
                     && currVenue.getNumLarge() >= large) {
@@ -234,38 +204,24 @@ public class VenueHireSystem {
                 int largeCount = 0;
                 ArrayList<Room> rooms = currVenue.getRooms();
                 for (Room currRoom : rooms) {
-                    //System.out.println("    Room = " + currRoom.getName());
                     // Determining if the reservation is clashing with another
                     ArrayList<Reservation> currReservations = currRoom.getReservations();
                     if (currReservations.size() == 0) foundReservation = true;
                     else {
                         for (Reservation currRes : currReservations) {
-                            /*System.out.println("        Res ID = " + currRes.getId());
-                            System.out.println("        Res start = " + currRes.getStart().toString());
-                            System.out.println("        Res end = " + currRes.getEnd().toString());*/
                             // Check if there already exists a reservation - change it
-                            /*System.out.println("curr start: " + currRes.getStart().toString());
-                            System.out.println("new start: " + start.toString());
-                            System.out.println("curr end: " + currRes.getEnd().toString());
-                            System.out.println("new end: " + end.toString());*/
                             if ((end.isAfter(currRes.getStart()) && end.isBefore(currRes.getEnd())) ||
                                 (start.isAfter(currRes.getStart()) && start.isBefore(currRes.getEnd())) ||
                                 (start.isBefore(currRes.getStart()) && end.isAfter(currRes.getEnd())) ||
                                 start.equals(currRes.getStart()) || end.equals(currRes.getEnd())) {
                                 foundReservation = false;
-                                //System.out.println("        " + currRes.getId() + "is clashing");
                             }
                         }
                     }
                     // Are there any reservations left
-                    if (foundReservation) {   
-                        //System.out.println("Found a reservation");
+                    if (foundReservation) {
                         // Determining room size and how many rooms to add
                         boolean hasAdded = false;
-                        /*System.out.println("        numSmall = " + smallCount);
-                        System.out.println("        numMed = " + mediumCount);
-                        System.out.println("        numLarge = " + largeCount);
-                        System.out.println("Size of room = " + currRoom.getSize());*/
                         if (currRoom.getSize().equals("small") && smallCount < small) {
                             goodRooms.add(currRoom);
                             currRoom.addReservation(new Reservation(id, start, end));
@@ -304,9 +260,8 @@ public class VenueHireSystem {
             }
 
             result.put("rooms", rooms);
-        // If fail, then reset
         } else {
-            // Rebook :)
+            // Rebook old rools
             if (foundRooms != null) {
                 for (Room room : foundRooms) {
                     room.addReservation(new Reservation(id, start, end));
