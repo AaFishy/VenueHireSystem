@@ -1,3 +1,21 @@
+/* TEST FOR CHECKING VENUES AND ROOMS
+    for (int i = 0; i < venues.size(); i++) {
+        Venue currVenue = venues.get(i);
+        System.out.println("Venue = " + currVenue.getName());
+        System.out.println("        numSmall = " + currVenue.getNumSmall());
+        System.out.println("        numMed = " + currVenue.getNumMed());
+        System.out.println("        numLarge = " + currVenue.getNumLarge());
+        for (int j = 0; j < currVenue.getRooms().size(); j++) {
+            Room currRoom = currVenue.getRooms().get(j);
+            System.out.println("    Room = " + currRoom.getName());
+            System.out.println("        Size = " + currRoom.getSize());
+        }
+    }*/
+
+
+/* TODO
+        Fix change function
+*/
 /**
  *
  */
@@ -27,7 +45,7 @@ public class VenueHireSystem {
      * Constructs a venue hire system. Initially, the system contains no venues,
      * rooms, or bookings.
      */
-    private ArrayList<Venue> venues;
+    protected ArrayList<Venue> venues;
 
     public VenueHireSystem() {
         // TODO Auto-generated constructor stub
@@ -46,51 +64,51 @@ public class VenueHireSystem {
 
         switch (json.getString("command")) {
 
-        case "room":
-            String venue = json.getString("venue");
-            String room = json.getString("room");
-            String size = json.getString("size");
-            addRoom(venue, room, size);
-            break;
+            case "room":
+                String venue = json.getString("venue");
+                String room = json.getString("room");
+                String size = json.getString("size");
+                addRoom(venue, room, size);
+                break;
 
-        case "request":
-            id = json.getString("id");
-            start = LocalDate.parse(json.getString("start"));
-            end = LocalDate.parse(json.getString("end"));
-            small = json.getInt("small");
-            medium = json.getInt("medium");
-            large = json.getInt("large");
+            case "request":
+                id = json.getString("id");
+                start = LocalDate.parse(json.getString("start"));
+                end = LocalDate.parse(json.getString("end"));
+                small = json.getInt("small");
+                medium = json.getInt("medium");
+                large = json.getInt("large");
 
-            result = request(id, start, end, small, medium, large);
+                result = request(id, start, end, small, medium, large);
 
-            System.out.println(result.toString(2));
-            break;
+                System.out.println(result.toString(2));
+                break;
 
-        // TODO Implement other commands
-        case "change":
-            id = json.getString("id");
-            start = LocalDate.parse(json.getString("start"));
-            end = LocalDate.parse(json.getString("end"));
-            small = json.getInt("small");
-            medium = json.getInt("medium");
-            large = json.getInt("large");
+            // TODO Implement other commands
+            case "change":
+                id = json.getString("id");
+                start = LocalDate.parse(json.getString("start"));
+                end = LocalDate.parse(json.getString("end"));
+                small = json.getInt("small");
+                medium = json.getInt("medium");
+                large = json.getInt("large");
 
-            result = request(id, start, end, small, medium, large);
-            System.out.println(result.toString(2));
-            break;
+                result = request(id, start, end, small, medium, large);
+                System.out.println(result.toString(2));
+                break;
 
-        case "cancel":
-            id = json.getString("id");
-            
-            cancelRoom(id);
-            break;
+            case "cancel":
+                id = json.getString("id");
 
-        case "list":
-            venue = json.getString("venue");
+                cancelRoom(id);
+                break;
 
-            JSONArray resultArray = list(venue);
-            System.out.println(resultArray.toString(2));
-            break;
+            case "list":
+                venue = json.getString("venue");
+
+                JSONArray resultArray = list(venue);
+                System.out.println(resultArray.toString(2));
+                break;
         }
     }
 
@@ -100,7 +118,7 @@ public class VenueHireSystem {
         Venue foundVenue = null;
         for (int i = 0; i < venues.size(); i++) {
             // Found venue with same name
-            if (venue == venues.get(i).getName()) {
+            if (venue.equals(venues.get(i).getName())) {
                 foundVenue = venues.get(i);
                 break;
             }
@@ -110,33 +128,31 @@ public class VenueHireSystem {
             foundVenue = new Venue(venue);
             venues.add(foundVenue);
         }
-        ArrayList<Room> rooms = foundVenue.getRooms();
         Room newRoom = new Room(room, size);
-        rooms.add(newRoom);
-
-        foundVenue.setSize(size);
+        foundVenue.addRoom(newRoom);
+        foundVenue.addSize(size);
     }
 
     public void cancelRoom(String id) {
-        Room currRoom = findRoomId(id);
-        ArrayList<Reservation> reservations = currRoom.getReservations();
-        for (int i = 0; i < reservations.size(); i++) {
-            Reservation currRes = reservations.get(i);
-            if (currRes.getId() == id) reservations.remove(currRes);
+        ArrayList<Room> rooms = findRoomsId(id);
+        if (rooms == null) return;
+        for (int i = 0; i < rooms.size(); i++) {
+            Room currRoom = rooms.get(i);
+            currRoom.removeReservation(id);
         }
     }
 
-    public JSONArray list (String venueName) {
+    public JSONArray list(String venueName) {
         JSONArray arrayResults = new JSONArray();
         for (int i = 0; i < venues.size(); i++) {
             Venue venue = venues.get(i);
-            if (venue.getName() != venueName) continue;
+            if (!venue.getName().equals(venueName)) continue;
             // Getting list of rooms
             ArrayList<Room> rooms = venue.getRooms();
             for (int j = 0; j < rooms.size(); j++) {
                 JSONObject result = new JSONObject();
                 Room currRoom = rooms.get(j);
-                result.put("room", currRoom);
+                result.put("room", currRoom.getName());
                 // Getting list of reservations
                 ArrayList<Reservation> currReservations = currRoom.getReservations();
                 JSONArray reservationArray = new JSONArray();
@@ -157,102 +173,139 @@ public class VenueHireSystem {
         return arrayResults;
     }
 
-    private Room findRoomId(String id) {
+    public ArrayList<Room> findRoomsId(String id) {
+        ArrayList<Room> foundRooms = new ArrayList<Room>();
         for (int i = 0; i < venues.size(); i++) {
             Venue currVenue = venues.get(i);
             ArrayList<Room> rooms = currVenue.getRooms();
 
             for (int j = 0; j < rooms.size(); j++) {
                 Room currRoom = rooms.get(j);
-                ArrayList<Reservation> currReservations = currRoom.getReservations();
-                for (int k = 0; k < currReservations.size(); k++) {
-                    Reservation currRes = currReservations.get(k);
-                    if (currRes.getId() == id) return currRoom;
+                Reservation currRes = currRoom.getResId(id);
+                if (currRes != null) {
+                    if (currRes.getId().equals(id)) foundRooms.add(currRoom);
                 }
+                
             }
         }
         return null;
     }
 
-    public JSONObject request(String id, LocalDate start, LocalDate end,
-            int small, int medium, int large) {
+    public JSONObject request(String id, LocalDate start, LocalDate end, int small, int medium, int large) {
         JSONObject result = new JSONObject();
 
         ArrayList<Room> goodRooms = new ArrayList<Room>();
         String status = "rejected";
         String venue = "";
-        boolean foundReservation = false;
-        boolean change = false;
-
+        ArrayList<Venue> oldVenues = venues;
         // TODO Process the request commmand
-        Room room = findRoomId(id);
+        ArrayList<Room> foundRooms = findRoomsId(id);
         // If there already exists the room - change command
-        if (room != null) {
-            ArrayList<Reservation> currReservations = room.getReservations();
-            for (int i = 0; i < currReservations.size(); i++) {
-                Reservation currRes = currReservations.get(i);
-                // Check if there already exists a reservation - change it
-                if (currRes.getId() == id) {
-                    currReservations.remove(currRes);
-
+        if (foundRooms != null) {
+            cancelRoom(id);
+            /*for (int i = 0; i < venues.size(); i++) {
+                ArrayList<Room> rooms = venues.get(i).getRooms();
+                for (int j = 0; j < rooms.size(); j++) {
+                    Room currRoom = rooms.get(j);
+                    currRoom.removeReservation(id);
+                    //System.out.println("removed :)");
+                    removedRoom = true;
                 }
-            }
+                if (removedRoom) break;
+            }*/
+            
         }
-
+    
         for (int i = 0; i < venues.size(); i++) {
             Venue currVenue = venues.get(i);
+            boolean foundReservation = true;
+            /*System.out.println("Venue = " + currVenue.getName());
+            System.out.println("        numSmall = " + currVenue.getNumSmall());
+            System.out.println("        numMed = " + currVenue.getNumMed());
+            System.out.println("        numLarge = " + currVenue.getNumLarge());*/
             // The venue has enough rooms to accomodate
-            if (currVenue.getNumSmall() >= small && currVenue.getNumMed() >= medium && currVenue.getNumLarge() >= large) {
-                ArrayList<Room> rooms = currVenue.getRooms();
-                // Getting the small rooms:
+            if (currVenue.getNumSmall() >= small && currVenue.getNumMed() >= medium
+                    && currVenue.getNumLarge() >= large) {
                 int smallCount = 0;
                 int mediumCount = 0;
                 int largeCount = 0;
+                ArrayList<Room> rooms = currVenue.getRooms();
                 for (int j = 0; j < rooms.size(); j++) {
                     Room currRoom = rooms.get(j);
+                    //System.out.println("    Room = " + currRoom.getName());
                     // Determining if the reservation is clashing with another
                     ArrayList<Reservation> currReservations = currRoom.getReservations();
-                    for (int k = 0; k < currReservations.size(); k++) {
-                        Reservation currRes = currReservations.get(k);
-                        // Check if there already exists a reservation - change it
-                        if (end.isBefore(currRes.getStart()) || start.isAfter(currRes.getEnd())) {
-                            foundReservation = true;
+                    if (currReservations.size() == 0) foundReservation = true;
+                    else {
+                        for (int k = 0; k < currReservations.size(); k++) {
+                            Reservation currRes = currReservations.get(k);
+                            /*System.out.println("        Res ID = " + currRes.getId());
+                            System.out.println("        Res start = " + currRes.getStart().toString());
+                            System.out.println("        Res end = " + currRes.getEnd().toString());*/
+                            // Check if there already exists a reservation - change it
+                            /*System.out.println("curr start: " + currRes.getStart().toString());
+                            System.out.println("new start: " + start.toString());
+                            System.out.println("curr end: " + currRes.getEnd().toString());
+                            System.out.println("new end: " + end.toString());*/
+                            if ((end.isAfter(currRes.getStart()) && end.isBefore(currRes.getEnd())) ||
+                                (start.isAfter(currRes.getStart()) && start.isBefore(currRes.getEnd())) ||
+                                (start.isBefore(currRes.getStart()) && end.isAfter(currRes.getEnd())) ||
+                                start.equals(currRes.getStart()) || end.equals(currRes.getEnd())) {
+                                foundReservation = false;
+                                //System.out.println("        " + currRes.getId() + "is clashing");
+                            }
                         }
                     }
                     // Are there any reservations left
-                    if (foundReservation) {
-                        Reservation newRes = new Reservation(id, start, end);
-                        currReservations.add(newRes);
+                    if (foundReservation) {   
+                        //System.out.println("Found a reservation");
                         // Determining room size and how many rooms to add
-                        if (currRoom.getSize() == "small" && smallCount < small) {
+                        boolean hasAdded = false;
+                        /*System.out.println("        numSmall = " + smallCount);
+                        System.out.println("        numMed = " + mediumCount);
+                        System.out.println("        numLarge = " + largeCount);
+                        System.out.println("Size of room = " + currRoom.getSize());*/
+                        if (currRoom.getSize().equals("small") && smallCount < small) {
                             goodRooms.add(currRoom);
+                            currRoom.addReservation(new Reservation(id, start, end));
                             smallCount++;
-                        } else if (currRoom.getSize() == "medium" && smallCount < medium) {
+                            hasAdded = true;
+                        } else if (currRoom.getSize().equals("medium") && mediumCount < medium) {
                             goodRooms.add(currRoom);
+                            currRoom.addReservation(new Reservation(id, start, end));
                             mediumCount++;
-                        } else if (currRoom.getSize() == "large" && smallCount < large) {
+                            hasAdded = true;
+                        } else if (currRoom.getSize().equals("large") && largeCount < large) {
                             goodRooms.add(currRoom);
+                            currRoom.addReservation(new Reservation(id, start, end));
                             largeCount++;
+                            hasAdded = true;
                         }
-                        status = "success";
-                        venue = currVenue.getName();
+                        if (hasAdded){
+                           status = "success";
+                            venue = currVenue.getName(); 
+                        }
+                        
                     }
                 }
             }
+            // Ensures only one venue is used
+            if (foundReservation) break;
         }
 
         // FIXME Shouldn't always produce the same answer
         result.put("status", status);
         if (status == "success") {
             result.put("venue", venue);
-        }
-        
-        JSONArray rooms = new JSONArray();
-        for (int i = 0; i < goodRooms.size(); i++) {
-            rooms.put(goodRooms.get(i));
-        }
+            JSONArray rooms = new JSONArray();
+            for (int i = 0; i < goodRooms.size(); i++) {
+                rooms.put(goodRooms.get(i).getName());
+            }
 
-        result.put("rooms", rooms);
+            result.put("rooms", rooms);
+        // If fail, then reset
+        } else venues = oldVenues;
+
         return result;
     }
 

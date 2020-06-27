@@ -42,7 +42,11 @@ public class Venue {
         return numLarge;
     }
 
-    public void setSize(String size) {
+    public void addRoom(Room room) {
+        rooms.add(room);
+    }
+
+    public void addSize(String size) {
         switch (size) {
             case "small":
                 numSmall++;
