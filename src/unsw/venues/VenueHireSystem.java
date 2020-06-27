@@ -139,7 +139,6 @@ public class VenueHireSystem {
         if (rooms == null) return;
         for (Room currRoom : rooms) {
             currRoom.removeReservation(id);
-            System.out.println("Cancelling from " + currRoom.getName());
         }
     }
 
@@ -167,7 +166,6 @@ public class VenueHireSystem {
                 ArrayList<Reservation> reservations = currRoom.getReservations();
                 sortReservationByDate(reservations);
                 for (Reservation currRes : reservations) {
-                    System.out.println("    id = " + currRes.getId());
                     JSONObject reserveObject = new JSONObject();
                     reserveObject.put("id", currRes.getId());
                     reserveObject.put("start", currRes.getStart());
@@ -208,7 +206,6 @@ public class VenueHireSystem {
         ArrayList<Room> foundRooms = findRoomsId(id);
         // If there already exists the room - change command
         if (foundRooms != null) {
-            System.out.println("CANCEL");
             cancelRoom(id);
             /*for (int i = 0; i < venues.size(); i++) {
                 ArrayList<Room> rooms = venues.get(i).getRooms();
