@@ -2,7 +2,6 @@
         Fix change function
 */
 /**
- *
  */
 package unsw.venues;
 
@@ -30,6 +29,7 @@ public class VenueHireSystem {
     /**
      * Constructs a venue hire system. Initially, the system contains no venues,
      * rooms, or bookings.
+     * @param venues Initialise ArrayList of venue classes
      */
     protected ArrayList<Venue> venues;
 
@@ -38,6 +38,10 @@ public class VenueHireSystem {
         this.venues = new ArrayList<Venue>();
     }
 
+    /**
+     * Function to process the json inputs as commands
+     * @param json JSON input
+     */
     private void processCommand(JSONObject json) {
         // Common variables for "request" and "change"
         String id;
@@ -98,6 +102,12 @@ public class VenueHireSystem {
         }
     }
 
+    /**
+     * Function to add a room to a given venue
+     * @param venue Name of venue
+     * @param room Name of room
+     * @param size Size of room (Small/Med/Large)
+     */
     public void addRoom(String venue, String room, String size) {
         // TODO Process the room command
         // Is there a Venue with the same name already
@@ -119,6 +129,10 @@ public class VenueHireSystem {
         foundVenue.addSize(size);
     }
 
+    /**
+     * Function that removes reservations with id = "id"
+     * @param id The ID of the reservations that will be removed
+     */
     public void cancelRoom(String id) {
         ArrayList<Room> rooms = findRoomsId(id);
         if (rooms == null) return;
@@ -127,6 +141,10 @@ public class VenueHireSystem {
         }
     }
 
+    /**
+     * Function that sorts the given list of reservations by date
+     * @param reservations ArrayList of reservations
+     */
     public void sortReservationByDate(ArrayList<Reservation> reservations) {
         for (int i = 0; i < reservations.size() - 1; i++) {
             for (int j = 0; j < reservations.size() - i - 1; j++) {
@@ -137,6 +155,10 @@ public class VenueHireSystem {
         }
     }
 
+    /**
+     * Function that lists attributes of that venue including name, rooms, and booking
+     * @param venueName Name of the venue that we will be listing 
+     */
     public JSONArray list(String venueName) {
         JSONArray arrayResults = new JSONArray();
         for (Venue venue : venues) {
@@ -164,6 +186,11 @@ public class VenueHireSystem {
         return arrayResults;
     }
 
+    /**
+     * Function that finds all rooms with reservation id "id"
+     * @param id Id of the reservation we are trying to find
+     * @return ArrayList of Rooms
+     */
     public ArrayList<Room> findRoomsId(String id) {
         ArrayList<Room> foundRooms = new ArrayList<Room>();
         for (Venue currVenue : venues) {
@@ -181,6 +208,10 @@ public class VenueHireSystem {
         return null;
     }
 
+    /**
+     * Fulfils the request given, booking reservtions for given id, start and end dates, and for the number of different sized rooms
+     * @param id 
+     */
     public JSONObject request(String id, LocalDate start, LocalDate end, int small, int medium, int large) {
         JSONObject result = new JSONObject();
 
@@ -213,7 +244,7 @@ public class VenueHireSystem {
                             if ((end.isAfter(currRes.getStart()) && end.isBefore(currRes.getEnd())) ||
                                 (start.isAfter(currRes.getStart()) && start.isBefore(currRes.getEnd())) ||
                                 (start.isBefore(currRes.getStart()) && end.isAfter(currRes.getEnd())) ||
-                                start.equals(currRes.getStart()) || end.equals(currRes.getEnd())) {
+                                start.equals(currRes.getEnd()) || end.equals(currRes.getStart())) {
                                 foundReservation = false;
                             }
                         }
@@ -279,6 +310,7 @@ public class VenueHireSystem {
 
         while (sc.hasNextLine()) {
             String line = sc.nextLine();
+            if (line.startsWith("//")) continue;
             if (!line.trim().equals("")) {
                 JSONObject command = new JSONObject(line);
                 system.processCommand(command);

@@ -1,3 +1,5 @@
+// Main focus: Checking if change function works when rejected
+//           & Checking if clash is detected when they share a same date
 { "command": "room", "venue": "Hotel Transylvania", "room": "Bat Room", "size": "large" }
 { "command": "room", "venue": "Hotel Transylvania", "room": "Zombie Arm", "size": "medium" }
 { "command": "room", "venue": "Hotel Transylvania", "room": "Dracula Chamber", "size": "small" }
@@ -12,8 +14,7 @@
 { "command": "request", "id": "Big Family", "start": "2019-02-28", "end": "2019-03-01", "small": 2, "medium": 1, "large": 1 }
 // List Hotel Transylvania
 { "command": "list", "venue": "Hotel Transylvania" }
-// Assign to Bat Room, Zombie Arm, Dracula Chamber
-// Wrong
+// Wrong: reassign back to Bat Room, Zombie Arm, Dracula Chamber
 { "command": "change", "id": "Big Family", "start": "2019-02-28", "end": "2019-03-01", "small": 1, "medium": 1, "large": 2 }
 // List Hotel Transylvania
 { "command": "list", "venue": "Hotel Transylvania" }

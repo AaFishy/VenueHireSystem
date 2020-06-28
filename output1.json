@@ -1,0 +1,128 @@
+{
+    "venue": "Hotel Transylvania",
+    "rooms": [
+      "Bat Room"
+    ],
+    "status": "success"
+}
+{
+    "venue": "Hotel Transylvania",
+    "rooms": [
+      "Zombie Arm"
+    ],
+    "status": "success"
+}
+{
+    "status": "rejected"
+}
+{
+    "venue": "Hotel Transylvania",
+    "rooms": [
+      "Bat Room",
+      "Zombie Arm",
+      "Dracula Chamber",
+      "Coffin"
+    ],
+    "status": "success"
+}
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-19",
+          "end": "2019-02-25",
+          "id": "Want Sleep"
+        },
+        {
+          "start": "2019-02-28",
+          "end": "2019-03-01",
+          "id": "Big Family"
+        }
+      ],
+      "room": "Bat Room"
+    },
+    {
+      "reservations": [
+        {
+            "start": "2019-02-20",
+            "end": "2019-02-23",
+            "id": "Want Sleep"
+        },
+        {
+            "start": "2019-02-28",
+            "end": "2019-03-01",
+            "id": "Big Family"
+          }],
+      "room": "Zombie Arm"
+    },
+    {
+      "reservations": [
+        {
+            "start": "2019-02-28",
+            "end": "2019-03-01",
+            "id": "Big Family"
+        }],
+      "room": "Dracula Chamber"
+    },
+    {
+        "reservations": [
+          {
+              "start": "2019-02-28",
+              "end": "2019-03-01",
+              "id": "Big Family"
+          }],
+        "room": "Coffin"
+      }
+]
+{
+    "status": "rejected"
+}
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-19",
+          "end": "2019-02-25",
+          "id": "Want Sleep"
+        },
+        {
+          "start": "2019-02-28",
+          "end": "2019-03-01",
+          "id": "Big Family"
+        }
+      ],
+      "room": "Bat Room"
+    },
+    {
+      "reservations": [
+        {
+            "start": "2019-02-20",
+            "end": "2019-02-23",
+            "id": "Want Sleep"
+        },
+        {
+            "start": "2019-02-28",
+            "end": "2019-03-01",
+            "id": "Big Family"
+          }],
+      "room": "Zombie Arm"
+    },
+    {
+      "reservations": [
+        {
+            "start": "2019-02-28",
+            "end": "2019-03-01",
+            "id": "Big Family"
+        }],
+      "room": "Dracula Chamber"
+    },
+    {
+        "reservations": [
+          {
+              "start": "2019-02-28",
+              "end": "2019-03-01",
+              "id": "Big Family"
+          }],
+        "room": "Coffin"
+      }
+]
