@@ -1,2 +1,23 @@
-// Main focus: Checking if the reservations are added in correct order (increasing order)
-//           & Checking partial clash
+// Main focus: Checking for different venues with same sized room
+
+{ "command": "room", "venue": "A", "room": "A-1", "size": "large" }
+{ "command": "room", "venue": "B", "room": "B-1", "size": "large" }
+{ "command": "room", "venue": "C", "room": "C-1", "size": "large" }
+// Put in A-1
+{ "command": "request", "id": "A-1 Res", "start": "2019-02-19", "end": "2019-02-25", "small": 0, "medium": 0, "large": 1 }
+// Put in B-1 as A-1 has clashing reservation
+{ "command": "request", "id": "B-1 Res", "start": "2019-02-15", "end": "2019-02-22", "small": 0, "medium": 0, "large": 1 }
+// Put in C-1 as A-1 and B-1 has clashing reservation
+{ "command": "request", "id": "C-1 Res", "start": "2019-02-10", "end": "2019-02-19", "small": 0, "medium": 0, "large": 1 }
+// List A, B, C - should only have one reservation in each with corresponding name
+{ "command": "list", "venue": "A" }
+{ "command": "list", "venue": "B" }
+{ "command": "list", "venue": "C" }
+// Put in B-1 since Clashes with A-1
+{ "command": "request", "id": "B-2 Res", "start": "2019-02-24", "end": "2019-02-24", "small": 0, "medium": 0, "large": 1 }
+// Put in C-1 since Clashes with A-1 and B-1
+{ "command": "request", "id": "C-2 Res", "start": "2019-02-24", "end": "2019-02-27", "small": 0, "medium": 0, "large": 1 }
+// Change C-2 Res to be in B-1 since it clashes with A-1
+{ "command": "change", "id": "C-2 Res", "start": "2019-02-25", "end": "2019-02-27", "small": 0, "medium": 0, "large": 1 }
+// List B
+{ "command": "list", "venue": "B" }

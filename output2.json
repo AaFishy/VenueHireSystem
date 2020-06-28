@@ -1,0 +1,100 @@
+{
+    "venue": "A",
+    "rooms": [
+      "A-1"
+    ],
+    "status": "success"
+}
+{
+    "venue": "B",
+    "rooms": [
+      "B-1"
+    ],
+    "status": "success"
+}
+{
+    "venue": "C",
+    "rooms": [
+      "C-1"
+    ],
+    "status": "success"
+}
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-19",
+          "end": "2019-02-25",
+          "id": "A-1 Res"
+        }
+      ],
+      "room": "A-1"
+    }
+]
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-15",
+          "end": "2019-02-22",
+          "id": "B-1 Res"
+        }
+      ],
+      "room": "B-1"
+    }
+]
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-10",
+          "end": "2019-02-19",
+          "id": "C-1 Res"
+        }
+      ],
+      "room": "C-1"
+    }
+]
+{
+    "venue": "B",
+    "rooms": [
+      "B-1"
+    ],
+    "status": "success"
+}
+{
+    "venue": "C",
+    "rooms": [
+      "C-1"
+    ],
+    "status": "success"
+}
+{
+    "venue": "B",
+    "rooms": [
+      "B-1"
+    ],
+    "status": "success"
+}
+[
+    {
+      "reservations": [
+        {
+          "start": "2019-02-15",
+          "end": "2019-02-22",
+          "id": "B-1 Res"
+        },
+        {
+          "start": "2019-02-24",
+          "end": "2019-02-24",
+          "id": "B-2 Res"
+        },
+        {
+          "start": "2019-02-25",
+          "end": "2019-02-27",
+          "id": "C-2 Res"
+        }
+      ],
+      "room": "B-1"
+    }
+]
